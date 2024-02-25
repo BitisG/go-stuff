@@ -12,7 +12,7 @@ It is not long however, before your new boss informs you why you were needed so 
 Linux systems administrator for incompetence, and you've been tasked with cleaning up their mess!
 
 You ask your new boss for more information, and they mutter something about ssh and "dangerous permissions".
-However, when pressed for further info they simply shrug and tell you to figure it out. That's why they pay you the big bucks after all.
+However, when pressed for more information they simply shrug and tell you to figure it out. That's why they pay you the big bucks after all.
 
 ## Instructions (for students)
 
