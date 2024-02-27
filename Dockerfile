@@ -2,9 +2,9 @@
 FROM ubuntu:latest
 
 # Install SSH server and sudo package
-RUN apt-get update && \
-    apt-get install -y openssh-server sudo vim nano iptables netcat iproute2 && \
-    mkdir /var/run/sshd
+RUN apt-get update
+RUN apt-get install -y openssh-server sudo vim nano iptables netcat iproute2 
+RUN mkdir /var/run/sshd
 
 # Set a password for the root user
 RUN echo 'root:123' | chpasswd
@@ -37,11 +37,13 @@ RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && \
     echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 
 # Copy the 'audit' file to bitty's home directory and ensure it's executable maybe not needed after all idk
-COPY audit /home/bitty/audit
-RUN chmod u+s /home/bitty/audit && \
-    chmod a+x /home/bitty/audit
+RUN mkdir /app
+COPY audit /app/audit
+RUN chmod a+x /app/audit
 
-# USER bitty
+RUN rm -f /home/bitty/.bashrc
+COPY .bashrc /home/bitty/.bashrc
+
 
 
 # Run audit bin

