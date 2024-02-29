@@ -17,15 +17,15 @@ However, when pressed for more information they simply shrug and tell you to fig
 ## Instructions (for students)
 
 To pull the image run:
-`docker pull BitisGabonica/audit:latest`
+`docker pull bitisg/audit:latest`
 
 To run the image run the command:
-`docker run -d --name audit-container --cap-add=NET_ADMIN BitisGabonica/audit:latest`
+`docker run -d --name audit-container --cap-add=NET_ADMIN bitisg/audit:latest`
 
 * `-d` runs the container in detached mode (in the background).
 * `--name audit-container` gives the container a name (audit-container), making it easier to refer to.
 * `--cap-add=NET_ADMIN` This grants the container some additional network-related privileges.
-* `BitisGabonica/audit:latest` specifies the image to run.
+* `bitisg/audit:latest` specifies the image to run.
 
 To enter the container run:
 `docker exec -it audit-container /bin/bash`
