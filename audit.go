@@ -176,7 +176,7 @@ func level7() bool {
 
 	// Check if port 3306 is not in the listening state
 	if !strings.Contains(output, ":3306") {
-		fmt.Println("Level Solved: No listener found on port 3306.")
+		// fmt.Println("Level Solved: No listener found on port 3306.")
 		return true
 	} else {
 		return false
@@ -236,7 +236,7 @@ func printhint(level string) {
 	case "level 6":
 		fmt.Println("- Check for non-service users without a password set and remove them")
 	case "level 7":
-		fmt.Println("- Make sure you then expose ports on the server needlessly")
+		fmt.Println("- Make sure you don't expose ports on the server needlessly")
 	}
 }
 
