@@ -53,9 +53,21 @@ func level1(option string, value string) bool {
 	return false
 }
 
+func level1_0() bool {
+	return level1("PasswordAuthentication", "no")
+}
+
+func level1_5() bool {
+	return level1("PubkeyAuthentication", "yes")
+}
+
+func level1_75() bool {
+	return level1("PermitRootLogin", "no")
+}
+
 func level2() bool {
 	// Execute the iptables command to list all rules
-	cmd := exec.Command("sudo", "iptables", "-S")
+	cmd := exec.Command("iptables", "-S")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println("Error executing iptables command:", err)
@@ -217,27 +229,40 @@ func bonusLevel() bool {
 	return !found
 }
 
-func printhint(level string) {
-	switch level {
-	case "level 1":
-		fmt.Println("- Try checking if your sshd config is living up to current best practices regarding password-based logins")
-	case "level 1.5":
-		fmt.Println("- How are users supposed to login via SSH without password authentication?")
-	case "level 1.75":
-		fmt.Println("- It's not always a good idea to let users log in as root")
-	case "level 2":
-		fmt.Println("- Ensure your iptables configuration protects against brute-force attempts.")
-	case "level 3":
-		fmt.Println("- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform priviledge escalation")
-	case "level 4":
-		fmt.Println("- Try finding out if any users can run commands as sudo. Should the user be able to run that command? Could it be dangerous?")
-	case "level 5":
-		fmt.Println("- Check for unexpected user entries in /etc/passwd that could indicate security issues.")
-	case "level 6":
-		fmt.Println("- Check for non-service users without a password set and remove them")
-	case "level 7":
-		fmt.Println("- Make sure you don't expose ports on the server needlessly")
-	}
+var levelNames = [9]string{
+	"1",
+	"1.5",
+	"1.75",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+}
+
+var levelMethods = [9]func() bool{
+	level1_0,
+	level1_5,
+	level1_75,
+	level2,
+	level3,
+	level4,
+	level5,
+	level6,
+	level7,
+}
+
+var levelHints = [9]string{
+	"- Try checking if your sshd config is living up to current best practices regarding password-based logins",
+	"- How are users supposed to login via SSH without password authentication?",
+	"- It's not always a good idea to let users log in as root",
+	"- Ensure your iptables configuration protects against brute-force attempts.",
+	"- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform privilege escalation",
+	"- Try finding out if any users can run commands as sudo. Should the user be able to run that command? Could it be dangerous?",
+	"- Check for unexpected user entries in /etc/passwd that could indicate security issues.",
+	"- Check for non-service users without a password set and remove them",
+	"- Make sure you don't expose ports on the server needlessly",
 }
 
 var hintFlag bool
@@ -248,29 +273,18 @@ func main() {
 	flag.BoolVar(&hintFlag, "hints", false, "Shows hint for each level. Try to not use this too much")
 	flag.Parse()
 
-	levelResults := make(map[string](bool))
-
-	levelResults["level 1"] = level1("PasswordAuthentication", "no")
-	levelResults["level 1.5"] = level1("PubkeyAuthentication", "yes")
-	levelResults["level 1.75"] = level1("PermitRootLogin", "no")
-	levelResults["level 2"] = level2()
-	levelResults["level 3"] = level3()
-	levelResults["level 4"] = level4()
-	levelResults["level 5"] = level5()
-	levelResults["level 6"] = level6()
-	levelResults["level 7"] = level7()
-
 	allPassed := true
 
-	for level, passed := range levelResults {
-		if passed {
-			fmt.Printf("%s: ☒\n", level)
+	for i, levelName := range levelNames {
+		if levelMethods[i]() {
+			fmt.Printf("level %s: ☒\n", levelName)
 		} else {
-			fmt.Printf("%s: ☐\n", level)
+			fmt.Printf("level %s: ☐\n", levelName)
 			allPassed = false
 			if hintFlag {
-				printhint(level)
+				fmt.Println(levelHints[i])
 			}
+			break
 		}
 	}
 
