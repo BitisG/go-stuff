@@ -67,7 +67,7 @@ func level1_75() bool {
 
 func level2() bool {
 	// Execute the iptables command to list all rules
-	cmd := exec.Command("sudo", "iptables", "-S")
+	cmd := exec.Command("iptables", "-S")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println("Error executing iptables command:", err)
