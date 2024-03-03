@@ -292,6 +292,7 @@ func main() {
 		fmt.Println("BONUS LEVEL:\nAfter having fixed the more pressing issues, your manager returns.")
 		fmt.Println("They congratulate you, however just before you pop the champagne")
 		fmt.Println("you are informed that they suspect that a backdoor has been placed on the system. Can you find it and shut it down?")
+		fmt.Println()
 		if !bonusLevel() {
 			fmt.Println("Backdoor still present :(")
 		} else {
