@@ -267,6 +267,7 @@ func bonusLevel() bool {
 
 type level struct {
 	name string
+	description string
 	hint string
 	verify func() bool
 }
@@ -274,47 +275,56 @@ type level struct {
 var levels = [9]level{
 	level{
 		name: "1",
-		hint: "- Try checking if your sshd config is living up to current best practices regarding password-based logins",
+		description: "Remote access good practices",
+		hint: "- Try checking if your sshd config is living up to current best practices regarding password-based logins.",
 		verify: level1_0,
 	},
 	level{
 		name: "1.5",
+		description: "Remote access usable practices",
 		hint: "- How are users supposed to login via SSH without password authentication?",
 		verify: level1_5,
 	},
 	level{
 		name: "1.75",
-		hint: "- It's not always a good idea to let users log in as root",
+		description: "No to remote access bad practices",
+		hint: "- It's not always a good idea to let remote users log in as root.",
 		verify: level1_75,
 	},
 	level{
 		name: "2",
-		hint: "- Ensure your iptables configuration protects against brute-force attempts.",
+		description: "Network brutality resistance",
+		hint: "- Ensure your iptables configuration protects against brute-force attempts for remote shells.",
 		verify: level2,
 	},
 	level{
 		name: "3",
-		hint: "- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform privilege escalation",
+		description: "Binaries",
+		hint: "- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform privilege escalation?",
 		verify: level3,
 	},
 	level{
 		name: "4",
+		description: "sudo misconfigurations",
 		hint: "- Try finding out if any users can run commands as sudo. Should the user be able to run that command? Could it be dangerous?",
 		verify: level4,
 	},
 	level{
 		name: "5",
+		description: "Weird users on the system",
 		hint: "- Check for unexpected user entries in /etc/passwd that could indicate security issues.",
 		verify: level5,
 	},
 	level{
 		name: "6",
-		hint: "- Check for non-service users without a password set and give them a password",
+		description: "Insecure users on the system",
+		hint: "- Check for non-service users without a password set in /etc/shadow and give them a password.",
 		verify: level6,
 	},
 	level{
 		name: "7",
-		hint: "- Make sure you don't expose ports on the server needlessly",
+		description: "Accessible services",
+		hint: "- Make sure your server is not running services that allow external connections.",
 		verify: level7,
 	},
 }
@@ -331,9 +341,9 @@ func main() {
 
 	for _, level := range levels {
 		if level.verify() {
-			fmt.Printf("level %s:\t☒\n", level.name)
+			fmt.Printf("level %s:\t☒\t%s\n", level.name, level.description)
 		} else {
-			fmt.Printf("level %s:\t☐\n", level.name)
+			fmt.Printf("level %s:\t☐\t%s\n", level.name, level.description)
 			allPassed = false
 			if hintFlag {
 				fmt.Println(level.hint)
