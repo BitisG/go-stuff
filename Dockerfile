@@ -52,7 +52,7 @@ WORKDIR /app
 # Run audit bin
 CMD ["sh", "-c", "nc -lvnp 3306 -s 0.0.0.0 & tail -f /dev/null"]
 # docker build -t audit .                                                                                                                                                                                         0.0s
-# bitis@Workstation ~/s/netsec> docker run -d --name audit-container test
+# bitis@Workstation ~/s/netsec> docker run -d --cap-add=NET_ADMIN --name audit_container -t audit
 # docker stop audit-container
 # docker rm audit-container
 # docker system prune

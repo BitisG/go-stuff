@@ -261,7 +261,7 @@ var levelHints = [9]string{
 	"- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform privilege escalation",
 	"- Try finding out if any users can run commands as sudo. Should the user be able to run that command? Could it be dangerous?",
 	"- Check for unexpected user entries in /etc/passwd that could indicate security issues.",
-	"- Check for non-service users without a password set and remove them",
+	"- Check for non-service users without a password set and give them a password",
 	"- Make sure you don't expose ports on the server needlessly",
 }
 
