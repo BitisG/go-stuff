@@ -108,8 +108,8 @@ func level3() bool {
 
 	bins := strings.Fields(string(out))
 
-	return !(slices.Contains(bins, "/usr/bin/vim") || slices.Contains(bins, "/usr/bin/find") || slices.Contains(bins, "/usr/bin/python3"))
-	// To pass: sudo chmod u-s /usr/bin/find
+	return !(slices.Contains(bins, "/usr/bin/vim.basic") || slices.Contains(bins, "/usr/bin/find") || slices.Contains(bins, "/usr/bin/python3.10"))
+	// To pass: sudo chmod u-s /usr/bin/find (and the others)
 }
 
 func level4() bool {
@@ -152,29 +152,65 @@ func level5() bool {
 
 }
 
+// list of users allowed to have */!/empty password
+var service_users = [23]string{
+	"daemon",
+	"bin",
+	"sys",
+	"sync",
+	"games",
+	"man",
+	"lp",
+	"mail",
+	"news",
+	"uucp",
+	"proxy",
+	"www-data",
+	"backup",
+	"list",
+	"irc",
+	"gnats",
+	"nobody",
+	"_apt",
+	"systemd-network",
+	"systemd-resolve",
+	"messagebus",
+	"systemd-timesync",
+	"sshd",
+}
+
+func is_service_user(tested string) bool {
+	for _, e := range service_users {
+		if tested == e {
+			return true
+		}
+	}
+	return false
+}
+
 func level6() bool {
-	// Read the /etc/shadow file to check for the dave user's password
+	// Read the /etc/shadow file to check for the users' passwords
 	dat, err := os.ReadFile("/etc/shadow")
 	check(err)
 
 	shadowLines := strings.Split(string(dat), "\n")
 	for _, line := range shadowLines {
-		if line == "" {
+		if line == "" || strings.HasPrefix(line, "#") {
 			continue
 		}
 		fields := strings.Split(line, ":")
-		if fields[0] == "dave" {
+		if len(fields) > 2 {
 			// Check if the password field is empty, "*", or "!"
+			usernameField := fields[0]
 			passwordField := fields[1]
-			if passwordField == "" || passwordField == "*" || passwordField == "!" {
+			if !is_service_user(usernameField) && (passwordField == "" || passwordField == "*" || passwordField == "!") {
 				// fmt.Printf("User without a password found: %s\n", fields[0])
 				return false
 			}
-			return true
 		}
 	}
 
-	return false
+	return true
 	// To pass: passwd dave
 }
 

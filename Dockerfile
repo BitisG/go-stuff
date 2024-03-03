@@ -1,5 +1,5 @@
 # Use Ubuntu as the base image
-FROM ubuntu:latest
+FROM ubuntu:jammy-20240212
 
 # Install SSH server and sudo package
 RUN apt-get update
@@ -17,7 +17,7 @@ RUN useradd -m bitty && \
 RUN useradd -m -u 0 -o -G sudo dave && \
     passwd -d dave
 
-# This sets SUID for /usr/bin/vim.basic and i have no idea
+# This sets SUID for three common binaries
 RUN chmod u+s /usr/bin/find && \
     chmod u+s /usr/bin/vim && \
     chmod u+s /usr/bin/python3
