@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Install SSH server and sudo package
 RUN apt-get update
-RUN apt-get install -y openssh-server sudo vim nano iptables netcat iproute2 
+RUN apt-get install -y openssh-server sudo vim nano iptables netcat iproute2 cowsay
 RUN mkdir /var/run/sshd
 
 # Set a password for the root user
@@ -44,7 +44,10 @@ RUN chmod a+x /app/audit
 RUN rm -f /home/bitty/.bashrc
 COPY .bashrc /home/bitty/.bashrc
 
-
+# introduce the container and put the user in the right dir for ./audit
+COPY motd /etc/motd
+RUN echo 'cat /etc/motd | /usr/games/cowsay' >> /root/.bashrc
+WORKDIR /app
 
 # Run audit bin
 CMD ["sh", "-c", "nc -lvnp 3306 -s 0.0.0.0 & tail -f /dev/null"]
