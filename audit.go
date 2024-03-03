@@ -108,8 +108,8 @@ func level3() bool {
 
 	bins := strings.Fields(string(out))
 
-	return !(slices.Contains(bins, "/usr/bin/vim") || slices.Contains(bins, "/usr/bin/find") || slices.Contains(bins, "/usr/bin/python3"))
-	// To pass: sudo chmod u-s /usr/bin/find
+	return !(slices.Contains(bins, "/usr/bin/vim.basic") || slices.Contains(bins, "/usr/bin/find") || slices.Contains(bins, "/usr/bin/python3.10"))
+	// To pass: sudo chmod u-s /usr/bin/find (and the others)
 }
 
 func level4() bool {
