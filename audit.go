@@ -265,40 +265,58 @@ func bonusLevel() bool {
 	return !found
 }
 
-var levelNames = [9]string{
-	"1",
-	"1.5",
-	"1.75",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
+type level struct {
+	name string
+	hint string
+	verify func() bool
 }
 
-var levelMethods = [9]func() bool{
-	level1_0,
-	level1_5,
-	level1_75,
-	level2,
-	level3,
-	level4,
-	level5,
-	level6,
-	level7,
-}
-
-var levelHints = [9]string{
-	"- Try checking if your sshd config is living up to current best practices regarding password-based logins",
-	"- How are users supposed to login via SSH without password authentication?",
-	"- It's not always a good idea to let users log in as root",
-	"- Ensure your iptables configuration protects against brute-force attempts.",
-	"- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform privilege escalation",
-	"- Try finding out if any users can run commands as sudo. Should the user be able to run that command? Could it be dangerous?",
-	"- Check for unexpected user entries in /etc/passwd that could indicate security issues.",
-	"- Check for non-service users without a password set and give them a password",
-	"- Make sure you don't expose ports on the server needlessly",
+var levels = [9]level{
+	level{
+		name: "1",
+		hint: "- Try checking if your sshd config is living up to current best practices regarding password-based logins",
+		verify: level1_0,
+	},
+	level{
+		name: "1.5",
+		hint: "- How are users supposed to login via SSH without password authentication?",
+		verify: level1_5,
+	},
+	level{
+		name: "1.75",
+		hint: "- It's not always a good idea to let users log in as root",
+		verify: level1_75,
+	},
+	level{
+		name: "2",
+		hint: "- Ensure your iptables configuration protects against brute-force attempts.",
+		verify: level2,
+	},
+	level{
+		name: "3",
+		hint: "- What are SUID binaries and how can you list all of them on your system? Which ones can be used by attackers to perform privilege escalation",
+		verify: level3,
+	},
+	level{
+		name: "4",
+		hint: "- Try finding out if any users can run commands as sudo. Should the user be able to run that command? Could it be dangerous?",
+		verify: level4,
+	},
+	level{
+		name: "5",
+		hint: "- Check for unexpected user entries in /etc/passwd that could indicate security issues.",
+		verify: level5,
+	},
+	level{
+		name: "6",
+		hint: "- Check for non-service users without a password set and give them a password",
+		verify: level6,
+	},
+	level{
+		name: "7",
+		hint: "- Make sure you don't expose ports on the server needlessly",
+		verify: level7,
+	},
 }
 
 var hintFlag bool
@@ -311,14 +329,14 @@ func main() {
 
 	allPassed := true
 
-	for i, levelName := range levelNames {
-		if levelMethods[i]() {
-			fmt.Printf("level %s: ☒\n", levelName)
+	for _, level := range levels {
+		if level.verify() {
+			fmt.Printf("level %s:\t☒\n", level.name)
 		} else {
-			fmt.Printf("level %s: ☐\n", levelName)
+			fmt.Printf("level %s:\t☐\n", level.name)
 			allPassed = false
 			if hintFlag {
-				fmt.Println(levelHints[i])
+				fmt.Println(level.hint)
 			}
 			break
 		}
