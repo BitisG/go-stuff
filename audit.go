@@ -153,28 +153,27 @@ func level5() bool {
 }
 
 func level6() bool {
-	// Read the /etc/shadow file to check for the dave user's password
+	// Read the /etc/shadow file to check for the users' passwords
 	dat, err := os.ReadFile("/etc/shadow")
 	check(err)
 
 	shadowLines := strings.Split(string(dat), "\n")
 	for _, line := range shadowLines {
-		if line == "" {
+		if line == "" || strings.HasPrefix(line, "#") {
 			continue
 		}
 		fields := strings.Split(line, ":")
-		if fields[0] == "dave" {
+		if len(fields) > 2 {
 			// Check if the password field is empty, "*", or "!"
 			passwordField := fields[1]
 			if passwordField == "" || passwordField == "*" || passwordField == "!" {
 				// fmt.Printf("User without a password found: %s\n", fields[0])
 				return false
 			}
-			return true
 		}
 	}
 
-	return false
+	return true
 	// To pass: passwd dave
 }
 
