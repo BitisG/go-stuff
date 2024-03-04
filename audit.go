@@ -117,8 +117,13 @@ func level4() bool {
 	cmd := exec.Command("/bin/cat", "/etc/sudoers.d/bitty")
 	out, _ := cmd.Output()
 
-	if strings.Contains(string(out), "/bin/less /root/log_file.txt") {
-		return false
+	lines := strings.Split(string(out), "\n")
+	needle := "/bin/less /root/log_file.txt"
+
+	for _, line := range lines {
+		if strings.Contains(line, needle) && !strings.HasPrefix(line, "#") {
+			return false
+		}
 	}
 
 	return true
