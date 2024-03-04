@@ -361,6 +361,8 @@ func main() {
 			fmt.Println("Backdoor still present :(")
 		} else {
 			fmt.Println("Backdoor removed, good job!")
+			fmt.Println()
+			fmt.Println("Psst - Wanna hack stuff? Test your skill against hackerlab.dtu.dk/chall today!")
 		}
 	}
 
